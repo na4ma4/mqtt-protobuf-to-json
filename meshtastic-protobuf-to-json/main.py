@@ -19,10 +19,10 @@ logging.basicConfig(
 
 # Get the directory where the script is located to build the path for the config file
 script_dir = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(script_dir, 'settings.json')
+config_path = '/data/options.json'
 
 if not os.path.exists(config_path):
-    config_path = os.path.join('/etc/mqtt-protobuf-to-json', 'settings.json')
+    config_path = os.path.join('/config/mqtt-protobuf-to-json', 'config.json')
 
 # Load configuration from the config.py file
 config = {}
@@ -41,9 +41,16 @@ buf_topic = config['broker']['buftopic']
 json_topic = config['broker']['jsontopic']
 channel = config['broker']['buftopic']
 
+def get_channel(channel_name):
+		for ch in config['channels']:
+				if ch['name'] == channel_name:
+						return ch
+		throw KeyError(f"Channel {channel_name} not found in configuration.")
+
 def get_channel_key(channel_name):
     try:
-        return "1PG7OiApB1nwvP+rz05pAQ==" if config['channels'][channel_name]['key'] == "AQ==" else config['channels'][channel_name]['key']
+				channel = get_channel(channel_name)
+        return "1PG7OiApB1nwvP+rz05pAQ==" if channel['key'] == "AQ==" else channel['key']
     except KeyError:
         logging.error(f"Channel {channel_name} not found in configuration.")
         return None

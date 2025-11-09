@@ -36,10 +36,40 @@
     }
   ],
   "options": {
-    "data_path": "/config/meshtastic_protobuf_to_json"
+    "broker": {
+      "address": "mqtt.meshtastic.org",
+      "port": 1883,
+      "user": "meshdev",
+      "password": "large4cats",
+      "buftopic": "msh/ANZ/2/e",
+      "jsontopic": "msh/ANZ/2/json"
+    },
+    "channels": [
+      {
+        "name": "LongFast",
+        "key": "AQ=="
+      },
+      {
+        "name": "ShortSecure",
+        "key": "BQ=="
+      }
+    ]
   },
   "schema": {
-    "data_path": "str"
+    "broker": {
+      "address": "str",
+      "port": "int",
+      "user": "str",
+      "password": "str",
+      "buftopic": "str",
+      "jsontopic": "str"
+    },
+    "channels": [
+      {
+        "name": "str",
+        "key": "str"
+      }
+    ]
   },
   "image": "ghcr.io/na4ma4/mqtt-protobuf-to-json"
 }
