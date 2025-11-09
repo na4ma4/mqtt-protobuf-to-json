@@ -42,14 +42,14 @@ json_topic = config['broker']['jsontopic']
 channel = config['broker']['buftopic']
 
 def get_channel(channel_name):
-		for ch in config['channels']:
-				if ch['name'] == channel_name:
-						return ch
-		throw KeyError(f"Channel {channel_name} not found in configuration.")
+    for ch in config['channels']:
+        if ch['name'] == channel_name:
+            return ch
+    raise KeyError(f"Channel {channel_name} not found in configuration.")
 
 def get_channel_key(channel_name):
     try:
-				channel = get_channel(channel_name)
+        channel = get_channel(channel_name)
         return "1PG7OiApB1nwvP+rz05pAQ==" if channel['key'] == "AQ==" else channel['key']
     except KeyError:
         logging.error(f"Channel {channel_name} not found in configuration.")
@@ -127,7 +127,7 @@ def parse_payload(payload_str):
     except Exception as e:
         logging.error(f"Failed to parse payload: {e}")
         return None
-    
+
 def get_portnum_name(portnum) -> str:
     """For Logging: Retrieve the name of the port number from the protobuf enum."""
     try:
@@ -147,7 +147,7 @@ def format_mac_address(raw_mac):
     except Exception as e:
         logging.error(f"Failed to format MAC address: {e}")
         return raw_mac  # Return the original raw string if formatting fails
-    
+
 
 def on_message(client, userdata, msg):
     se = mqtt_pb2.ServiceEnvelope()  # Main variable for parsing and decoding
@@ -158,7 +158,7 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"*** ServiceEnvelope: {str(e)}")
         return
-    
+
     # Decrypt the payload if necessary
     if mp.HasField("encrypted") and not mp.HasField("decoded"):
         key = get_channel_key(mp.channel)
@@ -168,12 +168,12 @@ def on_message(client, userdata, msg):
             return  # Skip processing this message if decryption failed
     else:
         decoded_data = mp.decoded
-    
+
     mp.decoded.CopyFrom(decoded_data)
 
     portNumInt = mp.decoded.portnum
     handler = protocols.get(portNumInt)
-    
+
     # Check if a valid handler exists
     if handler is not None and handler.protobufFactory is not None:
         payload = handler.protobufFactory()
@@ -219,7 +219,7 @@ def on_message(client, userdata, msg):
         # Serialize the message dictionary to a JSON string
         json_message = json.dumps(message_dict, indent=4)
         logging.info(f"JSON message: \n{json_message}")
-        
+
         # Publish message to the JSON topic
         publish_topic = json_topic + "/" + msg.topic.split('/')[-2] + "/" + msg.topic.split('/')[-1]
         client.publish(publish_topic, json_message)
