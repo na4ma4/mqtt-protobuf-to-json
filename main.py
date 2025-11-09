@@ -21,6 +21,9 @@ logging.basicConfig(
 script_dir = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(script_dir, 'config.json')
 
+if not os.path.exists(config_path):
+    config_path = os.path.join('/etc/mqtt-protobuf-to-json', 'config.json')
+
 # Load configuration from the config.py file
 config = {}
 if os.path.exists(config_path):
