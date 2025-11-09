@@ -41,5 +41,5 @@
   "schema": {
     "data_path": "str"
   },
-  "image": "ghcr.io/na4ma4/mqtt-protobuf-to-json:latest"
+  "image": "ghcr.io/na4ma4/mqtt-protobuf-to-json"
 }
